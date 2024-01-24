@@ -6,26 +6,29 @@ using SeedData.Models;
 
 //method عادي
 
-var customers = GetData.GetCustomers().Where((x, i) => x.age > 30 && i >= 2).Select(
-    a => new DtoCustomer
-    {
-        customerName = a.name,
-        customerPhone = a.telephone,
-    }
-    );
+var orderList = GetData.GetCustomers().
+            OrderByDescending(x => x.age).
+           ThenByDescending (x => x.name) ;
+           //OrderBy(x => x.age);
+
 //query methods
 
-var customers2 = from cust in GetData.GetCustomers()
-                 where cust.age > 30
-                 select new
-                 {
-                   cust.name,
-                   cust.telephone,
-                 };
+var orderList2 = from o in GetData.GetCustomers()
+                 orderby o.age descending , o.name
+                 select o;
    
 
-foreach ( var customer in customers )
+foreach ( var order in orderList )
 {
-    Console.WriteLine(customer.customerName);
-    Console.WriteLine(customer.customerPhone);
+    Console.WriteLine("Id: {0}, name:{1}, age: {2}"
+        ,order.id, order.name, order.age);
+   
+}
+
+Console.WriteLine("..........................");
+foreach (var order in orderList2)
+{
+    Console.WriteLine("Id: {0}, name:{1}, age: {2}"
+        , order.id, order.name, order.age);
+
 }
