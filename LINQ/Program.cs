@@ -1,33 +1,31 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
+using SeedData;
+using SeedData.Models;
 
-List<int> intList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-List<string> stringList = new List<string>
-{ "ahemd saleh", "mohmed ali", "saleh ahmed"};
+//method عادي
 
-var names = stringList.Where(x => x.Contains("ahmed"));
+var customers = GetData.GetCustomers().Where((x, i) => x.age > 30 && i >= 2).Select(
+    a => new DtoCustomer
+    {
+        customerName = a.name,
+        customerPhone = a.telephone,
+    }
+    );
+//query methods
 
-stringList.Remove("ahmed saleh");
-stringList.AddRange(new string[] {"ali ahmed", "ahmed zabr ", "zabr"});
+var customers2 = from cust in GetData.GetCustomers()
+                 where cust.age > 30
+                 select new
+                 {
+                   cust.name,
+                   cust.telephone,
+                 };
+   
 
-foreach (var name in names)
+foreach ( var customer in customers )
 {
-    Console.WriteLine(name);
+    Console.WriteLine(customer.customerName);
+    Console.WriteLine(customer.customerPhone);
 }
-//اصل الكويري سنتكس او الميذد سينتكس 
-//Enumerable.Where()
-
-//qury sintucs كويري سنتكس
-//var result = from l in intList
-//             where l > 5
-//             select l;
-
-//method ميذود سنتاكس 
-//var result = intList.Where(l => l > 5);
-
-
-//foreach (var item in result)
-//{
-//    Console.WriteLine(item);
-//}
