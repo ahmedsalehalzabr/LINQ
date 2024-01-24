@@ -5,31 +5,78 @@ using SeedData;
 using SeedData.Models;
 
 
-//يعطيني رقم الاندكس
-//var elemnt = GetData.GetCustomers().ElementAt(5);
-//اذا القيمة المطلوبة غير موجودة
-var elemnt = GetData.GetCustomers().ElementAtOrDefault(500);
 
-if (elemnt != null)
-    Console.WriteLine(elemnt.name);
-else
-    Console.WriteLine("no here");
+// inner relationshop
+//one to miny 
+//method
+var cats = GetData.GetCategories();
+var custs = GetData.GetCustomers();
+
+var result = cats.Join(custs,
+             cat => cat.Id, cust => cust.categoryId,
+             (cat, cust) => new
+             {
+                 fullName = cust.name,
+                 catName = cat.Name
+             });
+
+foreach (var item in result)
+    Console.WriteLine(item.fullName + ":" + item.catName);
+
+Console.WriteLine("...........................");
+
+//group left join
+var resultl = cats.GroupJoin(custs,
+             cat => cat.Id, cust => cust.categoryId,
+             (cat, cust) => new
+             {
+                 myCustomers  = cust,
+                 catName = cat.Name
+             });
+
+foreach (var item in resultl)
+{
+    Console.WriteLine("category :" + item.catName);
+    if(item.myCustomers != null)
+    {
+        foreach (var c in item.myCustomers)
+            Console.WriteLine("-------->" + c.name);
+    }
+}
+
+Console.WriteLine("...........................");
+
+//query
+var result2 = from cat in cats
+              join cust in custs
+              on cat.Id equals cust.categoryId
+              select new
+              {
+                  fullName = cust.name,
+                  catName = cat.Name,
+              };
+
+foreach (var item in result2)
+    Console.WriteLine(item.fullName + ":" + item.catName);
+
+//left join wit query
+var result2l = from cat in cats
+              join cust in custs
+              on cat.Id equals cust.categoryId
+              into customer
+              select new
+              {
+                  myCustomers = customer,
+                  catName = cat.Name,
+              };
 
 
-//2 يعطيك رقم فريد فقط
-var single = GetData.GetCustomers().Single(x => x.id == 105);
-
-if (single != null)
-    Console.WriteLine(single.name);
-else
-    Console.WriteLine("no here");
-
-//3
-var count = GetData.GetCustomers().Count(x => x.age > 30);
-
-//4
-var max = GetData.GetCustomers().Max(x => x.age);
-//5
-var avrage = GetData.GetCustomers().Average(x => x.spendAverage);
-//6
-var sum = GetData.GetCustomers().Sum(x => x.spendAverage);
+foreach (var item in result2l)
+{
+    Console.WriteLine("category :" + item.catName);
+if (item.myCustomers != null)
+{
+    foreach (var c in item.myCustomers)
+        Console.WriteLine("-------->" + c.name);
+}
+}
