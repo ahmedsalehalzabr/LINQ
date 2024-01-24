@@ -4,31 +4,32 @@
 using SeedData;
 using SeedData.Models;
 
-//method عادي
 
-var orderList = GetData.GetCustomers().
-            OrderByDescending(x => x.age).
-           ThenByDescending (x => x.name) ;
-           //OrderBy(x => x.age);
+//يعطيني رقم الاندكس
+//var elemnt = GetData.GetCustomers().ElementAt(5);
+//اذا القيمة المطلوبة غير موجودة
+var elemnt = GetData.GetCustomers().ElementAtOrDefault(500);
 
-//query methods
+if (elemnt != null)
+    Console.WriteLine(elemnt.name);
+else
+    Console.WriteLine("no here");
 
-var orderList2 = from o in GetData.GetCustomers()
-                 orderby o.age descending , o.name
-                 select o;
-   
 
-foreach ( var order in orderList )
-{
-    Console.WriteLine("Id: {0}, name:{1}, age: {2}"
-        ,order.id, order.name, order.age);
-   
-}
+//2 يعطيك رقم فريد فقط
+var single = GetData.GetCustomers().Single(x => x.id == 105);
 
-Console.WriteLine("..........................");
-foreach (var order in orderList2)
-{
-    Console.WriteLine("Id: {0}, name:{1}, age: {2}"
-        , order.id, order.name, order.age);
+if (single != null)
+    Console.WriteLine(single.name);
+else
+    Console.WriteLine("no here");
 
-}
+//3
+var count = GetData.GetCustomers().Count(x => x.age > 30);
+
+//4
+var max = GetData.GetCustomers().Max(x => x.age);
+//5
+var avrage = GetData.GetCustomers().Average(x => x.spendAverage);
+//6
+var sum = GetData.GetCustomers().Sum(x => x.spendAverage);
